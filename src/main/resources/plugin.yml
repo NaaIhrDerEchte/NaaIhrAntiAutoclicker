@@ -1,7 +1,6 @@
 name: AntiAutoclicker
 version: '${project.version}'
 main: me.naaihr.antiautoclicker.AntiAutoclicker
-depend: [ProtocolLib]
 
 commands:
   autoclicker:
