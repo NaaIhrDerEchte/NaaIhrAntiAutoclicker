@@ -1,6 +1,5 @@
 package me.naaihr.antiautoclicker.commands;
 
-import com.avaje.ebean.validation.NotNull;
 import me.naaihr.antiautoclicker.player.MyPlayer;
 import me.naaihr.antiautoclicker.player.MyPlayerProvider;
 import org.bukkit.Bukkit;
@@ -41,7 +40,7 @@ public class AutoclickerCommand implements CommandExecutor {
 
                 MyPlayer myPlayerTarget = MyPlayerProvider.getPlayerByUUID(target.getUniqueId());
 
-                int highestPercentUsingAC = (int) (Math.log10(myPlayerTarget.getHighestUsingAutoclicker()) * 100);
+                int highestPercentUsingAC = (int) (Math.log10(myPlayerTarget.getHighestUsingAutoclickerLeft()) * 100);
 
                 ChatColor chatColor = ChatColor.GREEN;
                 if(highestPercentUsingAC > 50) {

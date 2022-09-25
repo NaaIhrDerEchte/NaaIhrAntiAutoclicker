@@ -1,7 +1,6 @@
 package me.naaihr.antiautoclicker;
 
 import me.naaihr.antiautoclicker.commands.AutoclickerCommand;
-import me.naaihr.antiautoclicker.listeners.PlayerAttackListener;
 import me.naaihr.antiautoclicker.listeners.PlayerSwingListener;
 import me.naaihr.antiautoclicker.listeners.PlayerConnectionListener;
 import org.bukkit.Bukkit;
@@ -18,7 +17,6 @@ public final class AntiAutoclicker extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerConnectionListener() , this);
         pm.registerEvents(new PlayerSwingListener() , this);
-        pm.registerEvents(new PlayerAttackListener() , this);
 
 
         this.getCommand("autoclicker").setExecutor(new AutoclickerCommand());

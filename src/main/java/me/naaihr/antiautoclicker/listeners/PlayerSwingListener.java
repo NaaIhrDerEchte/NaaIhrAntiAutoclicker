@@ -19,17 +19,49 @@ public class PlayerSwingListener implements Listener {
 
     @EventHandler
     public void swing(PlayerInteractEvent event) {
-        if (event.getAction() != Action.LEFT_CLICK_AIR) {
+        if(event.getAction() == Action.LEFT_CLICK_AIR) {
+            leftClickAutoClickerCheck(event.getPlayer());
+        }
+
+        if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            rightClickAutoClickerCheck(event.getPlayer(), event.getAction());
+
+        }
+    }
+
+    private void rightClickAutoClickerCheck(Player player, Action action) {
+        MyPlayer myPlayer = MyPlayerProvider.getPlayerByUUID(player.getUniqueId());
+
+        long delay = System.currentTimeMillis() - myPlayer.getLastClickedMillisRight();
+        myPlayer.setLastClickedMillisRight(System.currentTimeMillis() );
+
+        //Entfernt doubleclicks
+        if(delay < 10) {
             return;
         }
 
+        if(delay < 60) {
+            myPlayer.addUsingAutoclickerRight();
+        } else {
+            myPlayer.setUsingAutoclickerRight(0);
+        }
 
+        if(myPlayer.getUsingAutoclickerRight() > 100) {
+            getServer().getOnlinePlayers().forEach(player1 -> {
+                if (!player1.isOp()) {
+                    return;
+                }
+                player1.sendMessage(ChatColor.RED + player.getName() + " Rightclicked " + myPlayer.getUsingAutoclickerRight() + " Ticks SUS, highest: " + myPlayer.getHighestUsingAutoclickerRight());
+            });
+        }
+
+    }
+
+    private void leftClickAutoClickerCheck(Player player) {
         //In Creative funkt das nicht
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
-
-        Player player = event.getPlayer();
         MyPlayer myPlayer = MyPlayerProvider.getPlayerByUUID(player.getUniqueId());
 
         //Der Check funkt nur wenn er Spieler auf kein Entity schaut
@@ -38,8 +70,8 @@ public class PlayerSwingListener implements Listener {
         }
 
 
-        long lastClickMillis = myPlayer.getLastClickedAirMillis();
-        myPlayer.setLastClickedAirMillis(System.currentTimeMillis());
+        long lastClickMillis = myPlayer.getLastClickedAirMillisLeft();
+        myPlayer.setLastClickedAirMillisLeft(System.currentTimeMillis());
 
         //Player is lagging
         if ((System.currentTimeMillis() - lastClickMillis) < 10) {
@@ -48,9 +80,12 @@ public class PlayerSwingListener implements Listener {
 
         //SUS so schnell zu clicken
         if ((System.currentTimeMillis() - lastClickMillis) < 60) {
-            myPlayer.addUsingAutoclicker();
+            myPlayer.addUsingAutoclickerLeft();
             //nicht wirklich Prozent aber schon aussagekäftig, muss noch gucken ab was man bannen könnte
-            int percentUsingAC = (int) (Math.log10(myPlayer.getUsingAutoclicker()) * 100);
+
+            int percentUsingAC = (int) ( (1.0 - ( 1.0 / myPlayer.getUsingAutoclickerLeft()) ) * 100 );
+
+            //int percentUsingAC = (int) (Math.log10(myPlayer.getUsingAutoclicker()) * 100);
 
             ChatColor chatColor = ChatColor.GREEN;
             if (percentUsingAC > 50) {
@@ -60,17 +95,17 @@ public class PlayerSwingListener implements Listener {
                 chatColor = ChatColor.RED;
             }
 
-            if (percentUsingAC > 85) {
+            if (percentUsingAC > 90) {
                 ChatColor finalChatColor = chatColor;
                 getServer().getOnlinePlayers().forEach(player1 -> {
                     if (!player1.isOp()) {
                         return;
                     }
-                    player1.sendMessage(finalChatColor + event.getPlayer().getName() + " " + percentUsingAC + "% using Autoclicker");
+                    player1.sendMessage(finalChatColor + player.getName() + " " + percentUsingAC + "% using Autoclicker Left");
                 });
             }
         } else {
-            myPlayer.setUsingAutoclicker(myPlayer.getUsingAutoclicker() / 2);
+            myPlayer.setUsingAutoclickerLeft(myPlayer.getUsingAutoclickerLeft() / 2);
         }
     }
 

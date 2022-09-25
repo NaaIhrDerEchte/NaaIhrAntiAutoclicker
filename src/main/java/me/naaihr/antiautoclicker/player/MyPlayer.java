@@ -2,28 +2,33 @@ package me.naaihr.antiautoclicker.player;
 
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.Currency;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
 public class MyPlayer {
     private final UUID uuid;
     @Setter
-    private long lastClickedAirMillis = System.currentTimeMillis();
-
+    private long lastClickedAirMillisLeft = System.currentTimeMillis();
     @Setter
-    private int usingAutoclicker = 0;
-    private int highestUsingAutoclicker = 1;
+    private int usingAutoclickerLeft = 0;
+    private int highestUsingAutoclickerLeft = 0;
+    @Setter
+    private long lastClickedMillisRight = System.currentTimeMillis();
+    @Setter
+    private int usingAutoclickerRight = 0;
+    private int highestUsingAutoclickerRight = 0;
 
-    public void addUsingAutoclicker() {
-        this.usingAutoclicker++;
 
-        this.highestUsingAutoclicker = Math.max(usingAutoclicker,highestUsingAutoclicker);
+    public void addUsingAutoclickerLeft() {
+        this.usingAutoclickerLeft++;
+        this.highestUsingAutoclickerLeft = Math.max(usingAutoclickerLeft, highestUsingAutoclickerLeft);
+    }
 
+    public void addUsingAutoclickerRight() {
+        this.usingAutoclickerRight++;
+        this.highestUsingAutoclickerRight = Math.max(usingAutoclickerRight, highestUsingAutoclickerRight);
     }
 
 
